@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Avatar from "boring-avatars";
 import {
   FaRegCircleXmark,
@@ -18,9 +18,12 @@ export type GalleryProps = {
   users: User[];
 };
 const Gallery = ({ users }: GalleryProps) => {
-  const [usersList, setUsersList] = useState(users);
+  // const [usersList, setUsersList] = useState(users);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [field, setField] = useState<keyof User>("name");
+  const [direction, setDirection] = useState("ascending");
 
   const handleModalOpen = (id: number) => {
     const user = usersList.find((item) => item.id === id) || null;
@@ -36,11 +39,26 @@ const Gallery = ({ users }: GalleryProps) => {
     setIsModalOpen(false);
   };
 
+  const usersList = useMemo(() => {
+    return users.sort((a, b) => {
+      const prevItem = field === "company" ? a.company.name : a[field];
+      const nextItem = field === "company" ? b.company.name : b[field];
+
+      if (direction === "descending") {
+        return prevItem < nextItem ? 1 : -1;
+      }
+      return prevItem > nextItem ? 1 : -1;
+    });
+  }, [direction, field]);
+
   return (
     <div className="user-gallery">
       <div className="heading">
         <h1 className="title">Users</h1>
-        <Controls />
+        <Controls
+          handleFieldChange={(value) => setField(value)}
+          handleDirectionChange={(value) => setDirection(value)}
+        />
       </div>
       <div className="items">
         {usersList.map((user, index) => (
