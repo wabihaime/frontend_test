@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "boring-avatars";
 import {
   FaRegCircleXmark,
@@ -20,11 +20,16 @@ const Gallery = ({ users }: GalleryProps) => {
   const [usersList, setUsersList] = useState(users);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleModalOpen = (id: number) => {
     const user = usersList.find((item) => item.id === id) || null;
 
-    if(user) {
+    if (user) {
       setSelectedUser(user);
       setIsModalOpen(true);
     }
@@ -33,6 +38,22 @@ const Gallery = ({ users }: GalleryProps) => {
   const handleModalClose = () => {
     setSelectedUser(null);
     setIsModalOpen(false);
+  };
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://dummyjson.com/users");
+      const data = await response.json();
+
+      if (data?.users) {
+        setUsersList(data.users);
+      }
+    } catch (error) {
+      console.log("ERROR: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,13 +69,15 @@ const Gallery = ({ users }: GalleryProps) => {
             <div className="body">
               <Avatar
                 size={96}
-                name={user.name}
+                name={user.firstName}
                 variant="marble"
                 colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
               />
             </div>
             <div className="info">
-              <div className="name">{user.name}</div>
+              <div className="name">
+                {user.firstName} {user.lastName}
+              </div>
               <div className="company">{user.company.name}</div>
             </div>
           </div>
