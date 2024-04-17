@@ -56,7 +56,9 @@ const Gallery = ({ users }: GalleryProps) => {
     }
   };
 
-  return (
+  return loading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="user-gallery">
       <h1 className="heading">Users</h1>
       <div className="items">
