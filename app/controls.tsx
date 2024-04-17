@@ -1,10 +1,11 @@
 import Select from "react-select";
+import { User } from "./types/user";
 
 const Controls = ({
   handleFieldChange,
   handleDirectionChange,
 }: {
-  handleFieldChange: (h: string) => void;
+  handleFieldChange: (h: keyof User) => void;
   handleDirectionChange: (h: string) => void;
 }) => {
   const fieldOptions = [

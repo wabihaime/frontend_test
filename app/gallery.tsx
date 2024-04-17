@@ -22,7 +22,7 @@ const Gallery = ({ users }: GalleryProps) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [field, setField] = useState("name");
+  const [field, setField] = useState<keyof User>("name");
   const [direction, setDirection] = useState("ascending");
 
   const handleModalOpen = (id: number) => {
@@ -41,14 +41,13 @@ const Gallery = ({ users }: GalleryProps) => {
 
   const usersList = useMemo(() => {
     return users.sort((a, b) => {
+      const prevItem = field === "company" ? a.company.name : a[field];
+      const nextItem = field === "company" ? b.company.name : b[field];
+
       if (direction === "descending") {
-        return (a[field]?.name || a[field]) < (b[field]?.name || b[field])
-          ? 1
-          : -1;
+        return prevItem < nextItem ? 1 : -1;
       }
-      return (a[field]?.name || a[field]) > (b[field]?.name || b[field])
-        ? 1
-        : -1;
+      return prevItem > nextItem ? 1 : -1;
     });
   }, [direction, field]);
 
