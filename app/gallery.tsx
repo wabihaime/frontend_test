@@ -20,7 +20,7 @@ const Gallery = ({ users }: GalleryProps) => {
   const [usersList, setUsersList] = useState([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
